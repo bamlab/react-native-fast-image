@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -70,7 +71,7 @@ public class OkHttpProgressGlideModule implements GlideModule {
 
     private static class DispatchingProgressListener implements ResponseProgressListener {
         private static final Map<String, ProgressListener> LISTENERS = new HashMap<>();
-        private static final Map<String, Long> PROGRESSES = new HashMap<>();
+        private static final Map<String, Long> PROGRESSES = new WeakHashMap<>();
 
         private final Handler handler;
 
