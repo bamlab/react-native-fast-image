@@ -4,6 +4,7 @@ import {
   Image,
   NativeModules,
   requireNativeComponent,
+  Platform
 } from 'react-native'
 import ViewPropTypes from './utils/ViewPropTypes'
 
@@ -14,6 +15,7 @@ const FastImageViewNativeModule = NativeModules.FastImageView
 class FastImage extends Component {
   setNativeProps(nativeProps) {
     this._root.setNativeProps(nativeProps)
+    this.show = true;
   }
 
   render() {
@@ -27,7 +29,26 @@ class FastImage extends Component {
       ...props
     } = this.props
 
-    const resolvedSource = resolveAssetSource(source)
+    const resolvedSource = resolveAssetSource(source);
+   
+    if(Platform.OS === "android" && resolvedSource.__packager_asset){
+      
+       // alert(resolvedSource.uri)
+       return (
+        <Image
+          ref={e => (this._root = e)}
+          {...props}
+          source={source}
+         
+        />
+      );
+      
+    }
+    // If there's no source or source uri just fallback to Image.
+    
+
+
+    
     return (
       <FastImageView
         ref={e => (this._root = e)}
@@ -86,7 +107,7 @@ const FastImageView = requireNativeComponent('FastImageView', FastImage, {
     onFastImageProgress: true,
     onFastImageLoad: true,
     onFastImageError: true,
-    onFastImageLoadEnd: true
+    onFastImageLoadEnd: true,
   },
 })
 
