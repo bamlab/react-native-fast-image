@@ -14,8 +14,7 @@ const FastImageViewNativeModule = NativeModules.FastImageView
 
 class FastImage extends Component {
   setNativeProps(nativeProps) {
-    this._root.setNativeProps(nativeProps)
-    this.show = true;
+    this._root.setNativeProps(nativeProps);
   }
 
   render() {
@@ -32,8 +31,7 @@ class FastImage extends Component {
     const resolvedSource = resolveAssetSource(source);
    
     if(Platform.OS === "android" && resolvedSource.__packager_asset){
-      
-       // alert(resolvedSource.uri)
+    
        return (
         <Image
           ref={e => (this._root = e)}
@@ -44,11 +42,7 @@ class FastImage extends Component {
       );
       
     }
-    // If there's no source or source uri just fallback to Image.
-    
 
-
-    
     return (
       <FastImageView
         ref={e => (this._root = e)}
