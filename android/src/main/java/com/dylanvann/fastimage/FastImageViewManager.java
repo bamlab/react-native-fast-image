@@ -95,17 +95,18 @@ class FastImageViewManager extends SimpleViewManager<ImageViewWithUrl> implement
             if (!(target instanceof ImageViewTarget)) {
                 return false;
             }
-
-
             ImageViewWithUrl view = (ImageViewWithUrl) ((ImageViewTarget) target).getView();
             ThemedReactContext context = (ThemedReactContext) view.getContext();
             RCTEventEmitter eventEmitter = context.getJSModule(RCTEventEmitter.class);
             int viewId = view.getId();
-            if(resource.getMinimumHeight() * resource.getMinimumWidth() < 10){
+            if(resource.getIntrinsicWidth() * resource.getIntrinsicHeight() < 10){
                 eventEmitter.receiveEvent(viewId, REACT_ON_ERROR_EVENT, null);
+                eventEmitter.receiveEvent(viewId, REACT_ON_LOAD_END_EVENT, new WritableNativeMap());
+            }else{
+                eventEmitter.receiveEvent(viewId, REACT_ON_LOAD_EVENT, new WritableNativeMap());
+                eventEmitter.receiveEvent(viewId, REACT_ON_LOAD_END_EVENT, new WritableNativeMap());
             }
-            eventEmitter.receiveEvent(viewId, REACT_ON_LOAD_EVENT, new WritableNativeMap());
-            eventEmitter.receiveEvent(viewId, REACT_ON_LOAD_END_EVENT, new WritableNativeMap());
+
             return false;
         }
     };
