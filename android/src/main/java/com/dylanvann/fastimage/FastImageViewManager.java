@@ -99,8 +99,14 @@ class FastImageViewManager extends SimpleViewManager<ImageViewWithUrl> implement
             ThemedReactContext context = (ThemedReactContext) view.getContext();
             RCTEventEmitter eventEmitter = context.getJSModule(RCTEventEmitter.class);
             int viewId = view.getId();
-            eventEmitter.receiveEvent(viewId, REACT_ON_LOAD_EVENT, new WritableNativeMap());
-            eventEmitter.receiveEvent(viewId, REACT_ON_LOAD_END_EVENT, new WritableNativeMap());
+            if(resource.getIntrinsicWidth() * resource.getIntrinsicHeight() < 10){
+                eventEmitter.receiveEvent(viewId, REACT_ON_ERROR_EVENT, null);
+                eventEmitter.receiveEvent(viewId, REACT_ON_LOAD_END_EVENT, new WritableNativeMap());
+            }else{
+                eventEmitter.receiveEvent(viewId, REACT_ON_LOAD_EVENT, new WritableNativeMap());
+                eventEmitter.receiveEvent(viewId, REACT_ON_LOAD_END_EVENT, new WritableNativeMap());
+            }
+
             return false;
         }
     };
@@ -151,27 +157,8 @@ class FastImageViewManager extends SimpleViewManager<ImageViewWithUrl> implement
                 .priority(priority)
                 .placeholder(TRANSPARENT_DRAWABLE)
                 .listener(LISTENER)
-                .into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(final GlideDrawable resource, final GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        int width = resource.getIntrinsicWidth();
-                        int height = resource.getIntrinsicHeight();
+                .into(view);
 
-                        if (width * height < 10) {
-                            ThemedReactContext context = (ThemedReactContext) view.getContext();
-                            RCTEventEmitter eventEmitter = context.getJSModule(RCTEventEmitter.class);
-
-                            eventEmitter.receiveEvent(viewId, REACT_ON_ERROR_EVENT, null);
-
-
-                        }else{
-                            view.setImageDrawable(resource);
-                        }
-
-
-                    }
-                });
-                //.into(view);
     }
 
     @ReactProp(name = "resizeMode")
